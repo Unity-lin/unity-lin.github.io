@@ -1,0 +1,81 @@
+site_name: Unity-lin Dev Log
+site_url: https://unity-lin.github.io/
+site_description: 프로젝트를 만들며 배운 것, 막힌 것, 해결한 것을 기록하는 노트
+site_author: Unity-lin
+repo_url: https://github.com/Unity-lin/unity-lin.github.io
+repo_name: Unity-lin/unity-lin.github.io
+copyright: Copyright &copy; 2026 Unity-lin
+
+nav:
+  - 홈: index.md
+  - 프로젝트: projects/index.md
+  - 블로그:
+      - blog/index.md
+
+theme:
+  name: material
+  language: ko
+  features:
+    - content.code.copy
+    - navigation.top
+    - navigation.footer
+    - navigation.tabs
+    - navigation.indexes
+    - search.highlight
+    - search.suggest
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: white
+      accent: indigo
+      toggle:
+        icon: material/weather-night
+        name: 다크 모드로 전환
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: black
+      accent: indigo
+      toggle:
+        icon: material/weather-sunny
+        name: 라이트 모드로 전환
+
+extra:
+  generator: false
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/Unity-lin
+
+extra_css:
+  - stylesheets/extra.css
+
+plugins:
+  - search
+  - blog:
+      post_url_format: "{slug}"
+      post_date_format: "yyyy년 M월 d일"
+      categories_allowed:
+        - 프로젝트 노트
+        - 회고
+        - 트러블슈팅
+        - 학습
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - md_in_html
+  - footnotes
+  - toc:
+      permalink: true
+  - pymdownx.details
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
