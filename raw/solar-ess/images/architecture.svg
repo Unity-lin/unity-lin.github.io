@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 350" width="760" height="350" role="img" aria-label="시뮬레이터는 30분마다 깨어나 서버로 보내고, 스스로도 저장한다" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif" font-size="13">
+  <rect width="760" height="350" fill="#ffffff"/>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10z" fill="#8c959f"/>
+    </marker>
+  </defs>
+  <text x="24" y="32" font-size="16" font-weight="600" fill="#1f2328">시뮬레이터는 30분마다 깨어나 서버로 보내고, 스스로도 저장한다</text>
+
+  <g fill="none" stroke="#8c959f" stroke-width="1.25">
+    <path d="M188 190H220" marker-end="url(#arrow)"/>
+    <path d="M364 190H396" marker-end="url(#arrow)"/>
+    <path d="M540 190H572" marker-end="url(#arrow)"/>
+    <path d="M292 116V164" marker-end="url(#arrow)"/>
+    <path d="M292 216V274" marker-end="url(#arrow)"/>
+    <path d="M364 300H396" marker-end="url(#arrow)"/>
+    <path d="M540 300H572" marker-end="url(#arrow)"/>
+  </g>
+
+  <g text-anchor="middle">
+    <rect x="220" y="64" width="144" height="52" rx="8" fill="none" stroke="#8c959f" stroke-width="1.25"/>
+    <text x="292" y="87" font-weight="600" fill="#1f2328">Open-Meteo</text>
+    <text x="292" y="105" font-size="11.5" fill="#656d76">실측 기상값</text>
+
+    <rect x="44" y="164" width="144" height="52" rx="8" fill="none" stroke="#8c959f" stroke-width="1.25"/>
+    <text x="116" y="187" font-weight="600" fill="#1f2328">Cloud Scheduler</text>
+    <text x="116" y="205" font-size="11.5" fill="#656d76">실행 예약</text>
+
+    <rect x="220" y="164" width="144" height="52" rx="8" fill="#2f6fdb" fill-opacity="0.12" stroke="#2f6fdb" stroke-width="2"/>
+    <text x="292" y="187" font-weight="600" fill="#1f2328">시뮬레이터</text>
+    <text x="292" y="205" font-size="11.5" fill="#656d76">Cloud Functions</text>
+
+    <rect x="396" y="164" width="144" height="52" rx="8" fill="none" stroke="#8c959f" stroke-width="1.25"/>
+    <text x="468" y="187" font-weight="600" fill="#1f2328">대시보드 서버</text>
+    <text x="468" y="205" font-size="11.5" fill="#656d76">Express + MongoDB</text>
+
+    <rect x="572" y="164" width="144" height="52" rx="8" fill="none" stroke="#8c959f" stroke-width="1.25"/>
+    <text x="644" y="187" font-weight="600" fill="#1f2328">React 대시보드</text>
+    <text x="644" y="205" font-size="11.5" fill="#656d76">ESS 화면</text>
+
+    <rect x="220" y="274" width="144" height="52" rx="8" fill="none" stroke="#8c959f" stroke-width="1.25"/>
+    <text x="292" y="297" font-weight="600" fill="#1f2328">Firestore</text>
+    <text x="292" y="315" font-size="11.5" fill="#656d76">상태 · 측정 이력</text>
+
+    <rect x="396" y="274" width="144" height="52" rx="8" fill="none" stroke="#8c959f" stroke-width="1.25"/>
+    <text x="468" y="297" font-weight="600" fill="#1f2328">조회 API</text>
+    <text x="468" y="315" font-size="11.5" fill="#656d76">/readings</text>
+
+    <rect x="572" y="274" width="144" height="52" rx="8" fill="none" stroke="#8c959f" stroke-width="1.25"/>
+    <text x="644" y="297" font-weight="600" fill="#1f2328">여러 클라이언트</text>
+    <text x="644" y="315" font-size="11.5" fill="#656d76">API로 조회</text>
+  </g>
+
+  <g font-size="11.5" fill="#656d76">
+    <text x="204" y="152" text-anchor="middle">30분마다</text>
+    <text x="380" y="152" text-anchor="middle">측정값 전송</text>
+    <text x="302" y="144">기상값</text>
+    <text x="302" y="249">직접 저장</text>
+  </g>
+</svg>

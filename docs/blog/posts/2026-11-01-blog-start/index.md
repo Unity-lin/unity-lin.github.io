@@ -2,7 +2,7 @@
 date: 2026-11-01
 slug: blog-start
 categories:
-  - 프로젝트 노트
+  - 블로그 운영
 ---
 
 # 개발 블로그를 시작합니다

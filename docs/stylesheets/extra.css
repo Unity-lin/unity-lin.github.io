@@ -22,3 +22,13 @@
 .md-typeset .md-button {
   margin: 0.25rem;
 }
+
+/* 원고에서 아직 채우지 않은 자리 */
+.md-typeset .todo {
+  display: inline-block;
+  padding: 0 0.45em;
+  border: 1px dashed var(--md-default-fg-color--lighter);
+  border-radius: 0.3em;
+  font-size: 0.85em;
+  color: var(--md-default-fg-color--light);
+}

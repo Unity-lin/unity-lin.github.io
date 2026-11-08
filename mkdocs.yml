@@ -54,10 +54,14 @@ plugins:
       post_url_format: "{slug}"
       post_date_format: "yyyy년 M월 d일"
       categories_allowed:
-        - 프로젝트 노트
-        - 회고
-        - 트러블슈팅
-        - 학습
+        - 태양광 ESS 시뮬레이터
+        - 미세먼지 추적
+        - 도시 열섬 지도
+        - 빗물저장 시뮬레이터
+        - 하천 수질 모니터링
+        - 건물 탄소 발자국
+        - 음식물쓰레기 감량효과
+        - 블로그 운영
 
 markdown_extensions:
   - admonition
