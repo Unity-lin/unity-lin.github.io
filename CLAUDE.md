@@ -54,6 +54,22 @@
 7. `zensical build --clean`이 "No issues found"인지 확인한다.
 8. 위키 프로젝트 문서의 출판 현황과 `wiki/log.md`를 갱신한다.
 
+### 5. Update — 수정된 초안 반영
+사람이 `raw/<project>/drafts/`의 초안을 고치고 "N편 초안 수정했어, 반영해줘"라고 하면:
+1. 해당 초안과 게시본(`docs/blog/posts/<project>/<NN>-*/index.md`)을 비교해 바뀐 부분을 찾는다. 바뀐 내용을 사람에게 요약해 보여준다.
+2. Publish 규칙(링크 변환, 자리표시 처리, 이미지 복사)을 그대로 적용해 게시본을 갱신한다. `slug`는 바꾸지 않는다(URL 유지).
+3. front matter의 `date`를 아래처럼 바꿔 수정일을 기록한다. 이미 `created`가 있으면 `updated`만 고친다.
+   ```yaml
+   date:
+     created: <최초 게시일시 그대로>
+     updated: <오늘 YYYY-MM-DD>
+   ```
+4. 채워진 자리표시는 위키 미해결 항목에서 체크하고, 바뀐 사실은 위키 프로젝트·개념·교훈 문서에 반영한다.
+5. `zensical build --clean` 확인 → `wiki/log.md`에 `## [YYYY-MM-DD] update | <project> N편` 추가.
+6. 커밋·push는 사람에게 확인받은 뒤 한다.
+
+`raw/`는 LLM이 수정하지 않는다는 규칙은 그대로다. 초안 수정은 사람만 한다. 사람이 `docs/`의 게시본을 직접 고친 경우에는 덮어쓰기 전에 그 차이를 알리고 초안에 옮길지 묻는다.
+
 ## 위키 작성 규칙
 - 한국어로 쓴다. 파일명은 영문 kebab-case.
 - 문서 맨 위 front matter에 `sources:`(근거 원본 경로)와 `updated:`(YYYY-MM-DD)를 둔다.
