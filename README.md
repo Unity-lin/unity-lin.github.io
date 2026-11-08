@@ -9,88 +9,121 @@ Andrej Karpathy의 **LLM Wiki**(세컨드 브레인) 방식으로 운영하고, 
 
 ```
 .
-├── CLAUDE.md          # 스키마: LLM이 위키를 관리하고 글을 게시하는 규칙
-├── raw/               # ① 원본 (사람이 넣고, 수정하지 않음)
-│   ├── solar-ess/     #    태양광 ESS 시뮬레이터 — drafts/, images/, 발표자료.pptx
-│   ├── fine-dust/     #    미세먼지 추적
-│   ├── urban-heat-island/
-│   ├── rainwater-harvesting/
-│   ├── river-water-quality/
-│   ├── building-carbon/
-│   └── food-waste/
-├── wiki/              # ② 위키 (LLM이 원본을 정리·연결. Obsidian으로 열 수 있음)
-│   ├── index.md       #    전체 목차 — 질문은 여기서 시작
-│   ├── log.md         #    작업 로그 (시간순, 추가만)
-│   ├── lessons.md     #    프로젝트를 가로지르는 교훈
-│   ├── projects/      #    프로젝트별 요약·타임라인·미해결 항목·출판 현황
-│   └── concepts/      #    재사용할 개념 (PV 모델, PSH, ESS, 센서, 검증)
-├── docs/              # ③ 출판 (MkDocs → GitHub Pages로 공개되는 유일한 층)
-│   ├── index.md
-│   ├── projects/index.md
-│   └── blog/posts/<project>/<NN>-<slug>/index.md
-├── mkdocs.yml
-└── .github/workflows/docs.yml   # main push → 자동 배포
+├── raw/                    # ① 원본 — 내가 쓰고 고치는 곳 (블로그 글의 진짜 원본)
+│   ├── solar-ess/
+│   │   ├── series.toml     #    어떤 편을 언제 공개할지 정하는 설정
+│   │   ├── drafts/         #    초안 00~07.md
+│   │   ├── images/         #    글에 쓰는 그림
+│   │   └── *.pptx          #    발표자료 등 참고 원본
+│   ├── fine-dust/ urban-heat-island/ rainwater-harvesting/
+│   └── river-water-quality/ building-carbon/ food-waste/
+├── wiki/                   # ② 위키 — 원본을 정리·연결한 지식 베이스 (Obsidian으로 열 수 있음)
+│   ├── index.md            #    전체 목차
+│   ├── log.md              #    작업 로그
+│   ├── lessons.md          #    프로젝트를 가로지르는 교훈
+│   ├── projects/           #    프로젝트별 요약·타임라인·미해결 항목
+│   └── concepts/           #    재사용할 개념
+├── docs/                   # ③ 사이트 — GitHub Pages로 공개되는 유일한 층
+│   ├── index.md, projects/index.md
+│   └── blog/posts/
+│       ├── series/         #    ⚙️ raw/ 초안에서 자동 생성 (직접 고치지 말 것, git에 안 올라감)
+│       └── 2026-11-01-blog-start/   # 시리즈가 아닌 단독 글은 직접 작성
+├── scripts/build_posts.py  # raw/ 초안 → docs/blog/posts/series/ 변환기
+├── Makefile                # make preview / make publish
+├── CLAUDE.md               # Claude가 위키를 관리할 때 지키는 규칙
+└── .github/workflows/docs.yml   # push → 변환 → 빌드 → 배포
 ```
-
-| 층 | 누가 쓰나 | 공개 |
-|---|---|---|
-| `raw/` | 나 | 저장소에만 (사이트 X) |
-| `wiki/` | LLM이 쓰고 내가 검토 | 저장소에만 (사이트 X) |
-| `docs/` | LLM 초안, 내가 승인 | 사이트로 공개 |
 
 > 저장소가 **공개**이므로 `raw/`, `wiki/`도 GitHub에서 보입니다. 비공개 자료는 넣지 마세요.
 
-## 작업 흐름
+## 직접 수정하고 게시하기 (Claude 없이)
 
-1. **모으기** — 메모, 원고, 그림, 발표자료를 `raw/<project>/`에 넣는다.
-2. **Ingest** — Claude에게 "`<project>` ingest 해줘" → 위키 프로젝트 문서·개념·교훈·로그 갱신
-3. **Query** — 위키를 근거로 질문하고, 좋은 답은 위키 문서로 남긴다.
-4. **Lint** — "위키 점검해줘" → 모순, 끊긴 링크, 오래된 내용 확인
-5. **Publish** — "`<project>` N편까지 게시해줘" → `docs/blog/posts/`에 글 생성 → 빌드 확인 → push
-6. **Update** — 초안을 고친 뒤 "`<project>` N편 초안 수정했어, 반영해줘" → 게시본·위키 갱신 (아래 참고)
-
-자세한 규칙은 [CLAUDE.md](CLAUDE.md)에 있습니다.
-
-## 초안을 고친 뒤 블로그에 반영하기
-
-원고의 원본은 `raw/<project>/drafts/`의 초안입니다. **초안을 먼저 고치고**, 게시된 글은 초안에서 다시 만듭니다. (`docs/`의 글을 직접 고치면 다음 게시 때 초안 내용으로 덮어써질 수 있습니다.)
-
-### 1) 초안 수정
+### 처음 한 번만
 
 ```bash
-open raw/solar-ess/drafts/02-하드웨어-도전과-포기.md   # 원하는 편집기로 수정
+brew install uv                      # 없다면
+uv tool install zensical==0.0.72
 ```
 
-### 2) Claude에게 반영 요청 (Claude Code 프롬프트에 입력)
+### 이미 게시된 글 고치기
 
-| 상황 | 입력할 문장 |
+```bash
+# 1. 초안 수정
+open raw/solar-ess/drafts/02-하드웨어-도전과-포기.md
+
+# 2. 미리보기 (http://localhost:8000, Ctrl+C로 종료)
+make preview
+
+# 3. 게시 (변환 → 오류 검사 → 커밋 → push → 1~2분 뒤 자동 배포)
+make publish m="solar-ess 2편 수정"
+```
+
+수정일은 자동으로 붙습니다. 초안을 커밋한 날짜가 게시일보다 늦으면 글 상단에 수정일이 표시됩니다.
+
+### 새 편 공개하기
+
+`raw/solar-ess/series.toml`에서 해당 편의 `publish`를 `true`로 바꾸고 `date`를 적습니다.
+
+```toml
+[[posts]]
+file = "03-시뮬레이터로-방향을-틀다.md"
+slug = "solar-ess-03-simulator"     # 주소: /blog/solar-ess-03-simulator/
+date = "2026-11-15T09:00:00"        # ← 게시일 입력
+publish = true                      # ← false → true
+```
+
+```bash
+make preview                          # 확인
+make publish m="solar-ess 3편 게시"
+```
+
+이전 편에 있던 "다음: 3편 *(공개 예정)*" 표시는 자동으로 3편 링크로 바뀝니다.
+
+### 새 프로젝트 시작하기
+
+```bash
+mkdir -p raw/fine-dust/drafts raw/fine-dust/images
+cp raw/solar-ess/series.toml raw/fine-dust/series.toml   # 복사 후 category와 [[posts]]를 고침
+```
+
+`category`는 `mkdocs.yml`의 `categories_allowed`에 있는 이름을 그대로 씁니다(7개 프로젝트는 이미 등록돼 있음).
+프로젝트 목록 페이지 `docs/projects/index.md`의 상태 칸도 함께 고쳐 주세요.
+
+### 명령어 요약
+
+| 명령 | 하는 일 |
 |---|---|
-| 이미 게시된 편을 고쳤을 때 | `solar-ess 2편 초안 수정했어, 블로그에 다시 반영해줘` |
-| 여러 편을 고쳤을 때 | `solar-ess 1~2편 초안 수정했어, 반영해줘` |
-| 새 편을 게시할 때 | `solar-ess 3편까지 게시해줘` |
-| 자리표시(보강 예정)를 채웠을 때 | `solar-ess 2편 보강 예정 채웠어, 반영해줘` |
+| `make preview` | 초안 → 블로그 글 변환 후 로컬 미리보기 |
+| `make build` | 변환 + 빌드 오류 검사만 (커밋 안 함) |
+| `make publish m="메시지"` | 변환 + 검사 + `git add/commit/push` → 자동 배포 |
+| `gh run watch` | 배포 진행 상황 보기 (선택) |
 
-Claude가 하는 일 (CLAUDE.md의 **Update** 작업):
-1. 수정된 초안과 게시본을 비교해 바뀐 내용을 `docs/blog/posts/...`에 반영
-2. 글 front matter에 수정일(`date.updated`) 기록 → 글 상단에 수정일 표시
-3. 위키(`wiki/projects/<project>.md`, 개념·교훈)와 `wiki/log.md` 갱신
-4. `zensical build --clean`으로 오류 확인
-5. 커밋·push 여부를 물어보고 진행
+`make` 없이 `git push`만 해도 GitHub Actions가 같은 변환을 실행하므로 블로그에 반영됩니다. `make publish`는 push 전에 오류를 미리 잡아 줍니다.
+반영이 안 보이면 브라우저에서 `⌘ + Shift + R`(강력 새로고침)을 누르세요.
 
-### 3) 직접 확인하고 배포하고 싶을 때 (터미널)
+## 초안 작성 규칙
 
-```bash
-zensical serve --open                 # 로컬 미리보기 http://localhost:8000 (Ctrl+C로 종료)
-zensical build --clean                # "No issues found" 확인
+변환기(`scripts/build_posts.py`)가 아래 문법을 블로그 형식으로 바꿉니다.
 
-git add raw docs wiki
-git commit -m "post: solar-ess 2편 수정"
-git push                              # GitHub Actions가 1~2분 안에 자동 배포
+| 초안에 쓰는 것 | 블로그에서 |
+|---|---|
+| `# 2편. 제목` | 글 제목 |
+| 제목 다음 첫 문단 | 목록 페이지에 보이는 요약 |
+| `[다음 편](03-시뮬레이터로-방향을-틀다.md)` | 공개된 편이면 링크, 아니면 "다음 편 *(공개 예정)*" |
+| `` `[ 조립 사진 ]` `` (백틱 + 대괄호 + 공백) | 점선 상자 "보강 예정: 조립 사진" |
+| `![설명](images/chart.svg)` | 그림 (`raw/<project>/images/`에서 자동 복사) |
+| `<!-- 메모 -->` | 숨김 (블로그에 안 보임) |
+| `!!! tip "제목"` + 4칸 들여쓴 본문 | 강조 상자 ([문법](https://squidfunk.github.io/mkdocs-material/reference/admonitions/)) |
 
-gh run watch                          # 배포 진행 상황 보기 (선택)
-```
+## Claude와 함께 쓸 때 (선택)
 
-배포 후 바로 반영이 안 보이면 브라우저에서 `⌘ + Shift + R`로 강력 새로고침하세요.
+직접 게시와 별개로, 위키 정리는 Claude에게 맡길 수 있습니다. 규칙은 [CLAUDE.md](CLAUDE.md)에 있습니다.
+
+| 입력 | 결과 |
+|---|---|
+| `solar-ess ingest 해줘` | 새 원본을 읽고 위키(프로젝트·개념·교훈·로그) 갱신 |
+| `위키 점검해줘` | 모순, 끊긴 링크, 오래된 내용 확인 |
+| `<질문>` | 위키를 근거로 답하고, 좋은 답은 위키에 저장 |
 
 ## 진행 현황
 
@@ -103,17 +136,3 @@ gh run watch                          # 배포 진행 상황 보기 (선택)
 | 하천 수질 모니터링 | — | — | — |
 | 건물 탄소 발자국 | — | — | — |
 | 음식물쓰레기 감량효과 | — | — | — |
-
-## 로컬 실행
-
-```bash
-uv tool install zensical==0.0.72
-zensical serve --open        # http://localhost:8000
-zensical build --clean       # "No issues found" 확인
-```
-
-## 게시
-
-```bash
-git add -A && git commit -m "post: ..." && git push   # GitHub Actions가 자동 배포
-```

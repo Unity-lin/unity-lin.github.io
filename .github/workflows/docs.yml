@@ -19,10 +19,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0   # 초안 수정일(git 기록)을 읽기 위해 전체 기록 필요
       - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
       - run: pip install zensical==0.0.72
+      - run: python scripts/build_posts.py   # raw/ 초안 → 블로그 글
       - run: zensical build --clean
       - uses: actions/upload-pages-artifact@v5
         with:

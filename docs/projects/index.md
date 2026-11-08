@@ -4,7 +4,7 @@
 
 | 프로젝트 | 내용 | 상태 | 블로그 |
 |---|---|---|---|
-| **태양광 ESS 시뮬레이터** | 전국 10개 지역 태양광 발전·배터리 시뮬레이터와 ESS 대시보드 | :material-progress-wrench: 보정 중 | [시리즈 보기](../blog/posts/solar-ess/00-series-intro/index.md) (2/7편 공개) |
+| **태양광 ESS 시뮬레이터** | 전국 10개 지역 태양광 발전·배터리 시뮬레이터와 ESS 대시보드 | :material-progress-wrench: 보정 중 | [시리즈 보기](../blog/posts/series/solar-ess/solar-ess-00-intro/index.md) (2/7편 공개) |
 | 미세먼지 추적 | | :material-clock-outline: 예정 | — |
 | 도시 열섬 지도 | | :material-clock-outline: 예정 | — |
 | 빗물저장 시뮬레이터 | | :material-clock-outline: 예정 | — |

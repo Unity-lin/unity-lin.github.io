@@ -3,3 +3,4 @@ site/
 .cache/
 .obsidian/workspace*.json
 .obsidian/cache
+docs/blog/posts/series/

@@ -7,9 +7,9 @@
 
 | 층 | 경로 | 주인 | 규칙 |
 |---|---|---|---|
-| 1. 원본 | `raw/<project>/` | 사람 | **불변.** LLM은 읽기만 한다. 수정·삭제·이름 변경 금지 |
+| 1. 원본 | `raw/<project>/` | 사람 | 사람이 직접 쓰고 고친다. LLM은 읽기만 한다(예외: 부탁받았을 때 `series.toml`의 publish/date) |
 | 2. 위키 | `wiki/` | LLM | 원본을 읽고 요약·개념·교훈으로 컴파일. 사람은 읽고 검토 |
-| 3. 출판 | `docs/` | LLM 초안 → 사람 승인 | 위키와 원본에서 다듬은 글만 GitHub Pages로 공개 |
+| 3. 출판 | `docs/` | 자동 생성 + 사람 | 시리즈 글은 `raw/`에서 자동 생성, 홈·프로젝트 페이지·단독 글은 직접 작성 |
 
 `raw/`와 `wiki/`는 MkDocs 빌드 대상이 아니다(`docs/`만 사이트가 된다). 단, 저장소는 공개이므로 `raw/`에 비공개 자료를 넣지 않는다.
 
@@ -25,7 +25,7 @@
 | `building-carbon` | 건물 탄소 발자국 | 건물 탄소 발자국 |
 | `food-waste` | 음식물쓰레기 감량효과 | 음식물쓰레기 감량효과 |
 
-새 프로젝트는 이 표, `wiki/index.md`, `mkdocs.yml`의 `categories_allowed`, `docs/projects/index.md`에 함께 추가한다.
+새 프로젝트는 이 표, `raw/<slug>/series.toml`, `wiki/index.md`, `mkdocs.yml`의 `categories_allowed`, `docs/projects/index.md`에 함께 추가한다.
 
 ## 작업 (Operations)
 
@@ -43,32 +43,14 @@
 ### 3. Lint — 점검
 요청 시 위키를 점검한다: 원본과 어긋난 내용, 끊긴 `[[링크]]`, 고아 문서, 오래된 상태값, 문서 사이 모순.
 
-### 4. Publish — 블로그 게시
-"N편까지 게시해줘"라고 하면:
-1. 원본 초안(`raw/<project>/drafts/`)을 `docs/blog/posts/<project>/<NN>-<slug>/index.md`로 옮긴다.
-2. front matter: `date`(게시일), `slug`(`<project>-<NN>-<영문>`), `categories`(위 표의 카테고리).
-3. 첫 문단 뒤에 `<!-- more -->`를 넣는다.
-4. 아직 공개 안 된 편으로 가는 링크는 "공개 예정" 텍스트로 바꾼다.
-5. 원고의 `[ ... ]` 자리표시는 **지어내지 않는다.** `<span class="todo">보강 예정: ...</span>`으로 바꾸고 위키 미해결 항목에 적는다.
-6. 이미지는 쓰이는 것만 글 폴더의 `images/`로 복사한다.
-7. `zensical build --clean`이 "No issues found"인지 확인한다.
-8. 위키 프로젝트 문서의 출판 현황과 `wiki/log.md`를 갱신한다.
+### 4. Publish / Update — 블로그 게시 (사람이 직접 함)
+게시는 자동 파이프라인으로 한다. **`docs/blog/posts/series/`는 생성물이므로 직접 고치지 않는다.**
+- 원본: `raw/<project>/drafts/*.md` + `raw/<project>/series.toml`(공개 여부·slug·게시일)
+- 변환: `scripts/build_posts.py` — 링크 변환, `` `[ … ]` `` → "보강 예정", `<!-- more -->`, 이미지 복사, appendix, git 기록 기반 수정일
+- 명령: `make preview` / `make build` / `make publish m="..."`. CI(`.github/workflows/docs.yml`)도 같은 변환을 실행한다.
 
-### 5. Update — 수정된 초안 반영
-사람이 `raw/<project>/drafts/`의 초안을 고치고 "N편 초안 수정했어, 반영해줘"라고 하면:
-1. 해당 초안과 게시본(`docs/blog/posts/<project>/<NN>-*/index.md`)을 비교해 바뀐 부분을 찾는다. 바뀐 내용을 사람에게 요약해 보여준다.
-2. Publish 규칙(링크 변환, 자리표시 처리, 이미지 복사)을 그대로 적용해 게시본을 갱신한다. `slug`는 바꾸지 않는다(URL 유지).
-3. front matter의 `date`를 아래처럼 바꿔 수정일을 기록한다. 이미 `created`가 있으면 `updated`만 고친다.
-   ```yaml
-   date:
-     created: <최초 게시일시 그대로>
-     updated: <오늘 YYYY-MM-DD>
-   ```
-4. 채워진 자리표시는 위키 미해결 항목에서 체크하고, 바뀐 사실은 위키 프로젝트·개념·교훈 문서에 반영한다.
-5. `zensical build --clean` 확인 → `wiki/log.md`에 `## [YYYY-MM-DD] update | <project> N편` 추가.
-6. 커밋·push는 사람에게 확인받은 뒤 한다.
-
-`raw/`는 LLM이 수정하지 않는다는 규칙은 그대로다. 초안 수정은 사람만 한다. 사람이 `docs/`의 게시본을 직접 고친 경우에는 덮어쓰기 전에 그 차이를 알리고 초안에 옮길지 묻는다.
+사람이 게시를 부탁하면 Claude는 `series.toml`의 `publish`/`date`만 바꾸고 `make build`로 확인한다. 초안 본문은 고치지 않는다. 게시 후 위키 프로젝트 문서의 출판 현황과 `wiki/log.md`를 갱신한다.
+변환 규칙을 바꿀 때는 `scripts/build_posts.py`와 README의 "초안 작성 규칙" 표를 함께 고친다.
 
 ## 위키 작성 규칙
 - 한국어로 쓴다. 파일명은 영문 kebab-case.

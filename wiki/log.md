@@ -12,5 +12,10 @@
 - 생성: [[solar-ess]], [[pv-power-model]], [[peak-sun-hours]], [[ess-battery]], [[sensor-selection]], [[simulation-validation]], [[lessons]]
 
 ## [2026-11-08] publish | solar-ess 00~02편
-- `docs/blog/posts/solar-ess/00-series-intro`, `01-why-solar`, `02-hardware`
+- `docs/blog/posts/solar-ess/` 00~02편 (수동 작성)
 - 02편 자리표시 3곳은 "보강 예정"으로 표시 → [[solar-ess]] 미해결 항목
+
+## [2026-11-08] setup | 직접 게시 파이프라인
+- `raw/solar-ess/series.toml` + `scripts/build_posts.py` + `Makefile` 도입, CI에서 변환 실행
+- 수동 게시본 `docs/blog/posts/solar-ess/` 삭제 → `docs/blog/posts/series/`에서 자동 생성 (URL 동일)
+- 02편 부품표: 초안 부품목록을 그대로 접이식 부록으로 붙임
